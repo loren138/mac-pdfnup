@@ -1,6 +1,6 @@
 import Foundation
 
-let help = "Usage: pdfnup --output <out> --nup 1/2/4/6 <filelist>";
+let help = "Usage: pdfnup --output <out> --nup 1/2/6 <filelist>";
 
 do {
     var arguments = CommandLine.arguments.dropFirst()
