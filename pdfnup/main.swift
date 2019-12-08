@@ -20,8 +20,6 @@ do {
     guard let nupMode = NupMode(rawValue: nup) else {
         throw CommandError.missingArgument(key: "nup mode can only be 1, 2, or 6")
     }
-    
-    print(arguments)
 
     let inputs = arguments.map(URL.init(fileURLWithPath:))
     let action = CombinePDFs(inputs: inputs, output: output, nup: nupMode)
