@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		5C969EF8239D550F009DE624 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969EF7239D550F009DE624 /* main.swift */; };
+		5C969EFF239D5567009DE624 /* CombinePDFs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969EFE239D5567009DE624 /* CombinePDFs.swift */; };
+		5C969F03239D5614009DE624 /* CommandError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969F02239D5614009DE624 /* CommandError.swift */; };
+		5C969F05239D5C20009DE624 /* NupMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969F04239D5C20009DE624 /* NupMode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,9 @@
 /* Begin PBXFileReference section */
 		5C969EF4239D550F009DE624 /* pdfnup */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pdfnup; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C969EF7239D550F009DE624 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		5C969EFE239D5567009DE624 /* CombinePDFs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePDFs.swift; sourceTree = "<group>"; };
+		5C969F02239D5614009DE624 /* CommandError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandError.swift; sourceTree = "<group>"; };
+		5C969F04239D5C20009DE624 /* NupMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NupMode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,9 @@
 			isa = PBXGroup;
 			children = (
 				5C969EF7239D550F009DE624 /* main.swift */,
+				5C969F02239D5614009DE624 /* CommandError.swift */,
+				5C969EFE239D5567009DE624 /* CombinePDFs.swift */,
+				5C969F04239D5C20009DE624 /* NupMode.swift */,
 			);
 			path = pdfnup;
 			sourceTree = "<group>";
@@ -120,7 +129,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C969F05239D5C20009DE624 /* NupMode.swift in Sources */,
 				5C969EF8239D550F009DE624 /* main.swift in Sources */,
+				5C969EFF239D5567009DE624 /* CombinePDFs.swift in Sources */,
+				5C969F03239D5614009DE624 /* CommandError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +256,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
@@ -253,6 +266,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 			};
