@@ -1,7 +1,14 @@
 import Quartz
 import AVKit
 
+struct TOCEntry {
+    var title: String
+    var page: PDFPage
+    var startingPage: Int
+}
+
 struct CombinePDFs {
+    var cover: URL?
     var inputs: [URL]
     var output: URL
     var nup: NupMode
@@ -10,6 +17,7 @@ struct CombinePDFs {
         let document = PDFDocument()
         let outline = PDFOutline()
         document.outlineRoot = outline
+        var tocEntries = [TOCEntry]();
 
         for input in inputs {
             guard let inner = PDFDocument(url: input) else {
@@ -18,22 +26,24 @@ struct CombinePDFs {
 
             var titlePage: PDFPage?
             var index = 0
+            var startingPage = document.pageCount + 1
             while let nextSlide = inner.page(at: index) {
+                var newPage: PDFPage?
                 switch nup {
+                case .full:
+                    newPage = FullPage(page: nextSlide)
+                    index += 1
                 case .one:
-                    titlePage = titlePage ?? nextSlide
-                    document.addPage(nextSlide)
+                    newPage = OneUpPage(page: nextSlide)
                     index += 1
                 case .two:
-                    let newPage = TwoUpPage(
+                    newPage = TwoUpPage(
                         top: nextSlide,
                         bottom: inner.page(at: index + 1)
                     )
-                    titlePage = titlePage ?? newPage
-                    document.addPage(newPage)
                     index += 2
                 case .six:
-                    let newPage = SixUpPage(
+                    newPage = SixUpPage(
                         one: nextSlide,
                         two: inner.page(at: index + 1),
                         three: inner.page(at: index + 2),
@@ -41,18 +51,143 @@ struct CombinePDFs {
                         five: inner.page(at: index + 4),
                         six: inner.page(at: index + 5)
                     )
-                    titlePage = titlePage ?? newPage
-                    document.addPage(newPage)
                     index += 6
                 }
-                
+                newPage = NumberedPage(page: newPage!, number: document.pageCount)
+                titlePage = titlePage ?? newPage
+                document.addPage(newPage!)
             }
-            outline.addLink(named: input.deletingPathExtension().lastPathComponent, to: titlePage)
+            if let title = titlePage {
+                tocEntries.append(TOCEntry(
+                                    title: input.deletingPathExtension().lastPathComponent,
+                                    page: title,
+                                    startingPage: startingPage
+                ))
+            }
+        }
+        
+        var frontPage = 0;
+        if let coverUrl = cover {
+            var index = 0
+            var titlePage: PDFPage?
+            
+            guard let coverPdf = PDFDocument(url: coverUrl) else {
+                throw CommandError.couldNotOpenFile(coverUrl)
+            }
+            while let nextSlide = coverPdf.page(at: index) {
+                let newPage = FullPage(page: nextSlide)
+                titlePage = titlePage ?? newPage
+                document.insert(newPage, at: frontPage)
+                index += 1
+                frontPage += 1
+            }
+            outline.addLink(named: "Cover", to: titlePage)
+        }
+        
+        for entry in tocEntries {
+            outline.addLink(named: entry.title + " " + String(entry.startingPage), to: entry.page)
         }
 
         if !document.write(to: output) {
             throw CommandError.couldNotSaveFile(output)
         }
+    }
+
+}
+
+
+private class NumberedPage: PDFPage {
+    
+    let page: PDFPage
+    let pageNumber: Int
+    
+    init(page: PDFPage, number: Int) {
+        self.page = page;
+        self.pageNumber = number
+        super.init()
+        setBounds(CGRect(x: 0, y: 0, width: 612, height: 792), for: .mediaBox)
+    }
+    
+    final private func drawIn(rect: CGRect, attribString: NSAttributedString, context: CGContext) {
+        let framesetter = CTFramesetterCreateWithAttributedString(attribString)
+
+        // left column form
+        let leftColumnPath = CGMutablePath()
+        leftColumnPath.addRect(CGRect(x:rect.origin.x,
+                                      y: -rect.origin.y,
+                                      width: rect.size.width,
+                                      height: rect.size.height)
+        )
+
+        // left column frame
+        let translateAmount = rect.size.height
+
+        context.translateBy(x: 0, y: translateAmount)
+        context.scaleBy(x: 1.0, y: -1.0)
+        let leftFrame = CTFramesetterCreateFrame(framesetter, CFRangeMake(0, 0), leftColumnPath, nil)
+        let textTransform = CGAffineTransform(scaleX: 1.0, y: -1.0)
+        context.textMatrix = textTransform
+        CTFrameDraw(leftFrame, context)
+    }
+
+    override func draw(with box: PDFDisplayBox, to context: CGContext) {
+        // Draw original content
+        page.draw(with: box, to: context)
+
+        // Draw rotated overlay string
+        context.saveGState()
+        defer { context.restoreGState() }
+
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .right
+
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            NSAttributedString.Key.paragraphStyle:  paragraphStyle,
+            NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1),
+            NSAttributedString.Key.font: NSFont.systemFont(ofSize: 14)
+        ]
+
+        let attrString = NSAttributedString(string: String(pageNumber + 1),
+                                       attributes: attributes)
+
+
+        let rect = CGRect(x: 480, y: 730, width: 100, height: 100)
+        drawIn(rect: rect, attribString: attrString, context: context)
+    }
+
+}
+
+private class OneUpPage: PDFPage {
+
+    let page: PDFPage
+
+    init(page: PDFPage) {
+        self.page = page
+        super.init()
+        setBounds(CGRect(x: 0, y: 0, width: 612, height: 792), for: .mediaBox)
+    }
+
+    override func draw(with box: PDFDisplayBox, to context: CGContext) {
+        let rect = bounds(for: box).insetBy(dx: 36, dy: 27)
+        page.draw(with: .cropBox, in: rect, to: context)
+    }
+
+}
+
+private class FullPage: PDFPage {
+
+    let page: PDFPage
+
+    init(page: PDFPage) {
+        self.page = page
+        super.init()
+        setBounds(CGRect(x: 0, y: 0, width: 612, height: 792), for: .mediaBox)
+    }
+
+    override func draw(with box: PDFDisplayBox, to context: CGContext) {
+        let rect = bounds(for: box)
+        page.draw(with: .cropBox, in: rect, to: context, drawOutline: false)
     }
 
 }
@@ -125,15 +260,17 @@ private extension PDFDocument {
 
 private extension PDFPage {
 
-    func draw(with box: PDFDisplayBox, in rect: CGRect, to context: CGContext) {
+    func draw(with box: PDFDisplayBox, in rect: CGRect, to context: CGContext, drawOutline: Bool = true) {
         context.saveGState()
         defer { context.restoreGState() }
 
         let bounds = self.bounds(for: box)
         let target = AVMakeRect(aspectRatio: bounds.size, insideRect: rect)
 
-        context.setStrokeColor(gray: 0, alpha: 1)
-        context.stroke(target, width: 1)
+        if (drawOutline) {
+            context.setStrokeColor(gray: 0, alpha: 1)
+            context.stroke(target, width: 1)
+        }
         context.translateBy(x: target.minX, y: target.minY)
         context.scaleBy(x: target.width / bounds.width, y: target.height / bounds.height)
         draw(with: box, to: context)
