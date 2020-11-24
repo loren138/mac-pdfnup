@@ -145,14 +145,17 @@ private class TOCPage: PDFPage {
         }
         
         for tocEntry in tocEntries {
-            //  + " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ."
             let titleString = NSAttributedString(string: tocEntry.title, attributes: attributesLeft)
             let numberString = NSAttributedString(string: String(tocEntry.startingPage), attributes: attributesRight)
             let titleRect = CGRect(x: titleX, y: yPos, width: tocWidth, height: lineHeight)
             let pageRect = CGRect(x: pageX, y: yPos, width: pageNumberWidth, height: lineHeight)
+            let fullRect = CGRect(x: titleX, y: yPos, width: tocWidth + pageNumberWidth, height: lineHeight)
             drawIn(rect: titleRect, attribString: titleString, context: context)
             drawIn(rect: pageRect, attribString: numberString, context: context)
             yPos -= lineHeight
+            let link = PDFAnnotation(bounds: fullRect, forType: .link, withProperties: nil)
+            link.destination = PDFDestination(page: tocEntry.page, at: CGPoint(x: kPDFDestinationUnspecifiedValue, y: kPDFDestinationUnspecifiedValue))
+            self.addAnnotation(link)
         }
     }
 

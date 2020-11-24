@@ -2,7 +2,7 @@
 
 Mac Command Line Tool for PDFNUp Multiple Pages Per Sheet
 
-Usage: `pdfnup --cover cover.pdf --output <out> --nup full/1/2/6 <filelist>`
+Usage: `pdfnup --cover cover.pdf --output combined.pdf --details details.json`
 
 The cover is optional.
 
@@ -26,13 +26,25 @@ This file will be appneded in `full` mode so it most be portrait letter.
 
 If you include a cover, a table of contents will also be generated.
 
-### Number Up - NUP
+### Details
 
-- Full page will preserve links, but only accepts portrait letter pages.
-- 1 up will add a black border and inset the page but will make it fit.
-- 2 up adds an upper and lower (intended to fit two landscape slides per page)
-- 6 up adds a 2 x 3 grid (intended to fit 6 landscape slides per page)
+A JSON file giving the details of the combine action.
 
-### File List
+It should look like:
 
-The files to be added.
+```json
+[
+    {"title":"1. Introduction","file":"/Users/other/Documents/01-Introduction.pdf","nup":"6"},
+    {"title":"2. Setup","file":"/Users/other/Documents/02-Ottergram-Setup.pdf","nup":"6"},
+    {"title":"3.1. Edit Stuff","file":"/Users/other/Documents/03-edit.pdf","nup":"full"}
+]
+```
+
+- Title - the title for the Table of Contents (if you supply a cover) and the PDF outline
+    (viewable in the sidebar of many pdf viewers)
+- File - the full path to the PDF file for that chapter
+- nup - Number Up
+  - Full page will preserve links, but only accepts portrait letter pages.
+  - 1 up will add a black border and inset the page but will make it fit.
+  - 2 up adds an upper and lower (intended to fit two landscape slides per page)
+  - 6 up adds a 2 x 3 grid (intended to fit 6 landscape slides per page)

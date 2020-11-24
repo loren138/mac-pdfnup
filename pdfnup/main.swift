@@ -24,32 +24,15 @@ do {
     }
     let details = URL(fileURLWithPath: arguments[detailsIndex])
     arguments.removeSubrange(detailsFlagIndex ... detailsIndex)
-    
-    let data = Data("""
-    [
-        {"title":"Introduction","file":"/Users/loren/Sites/pdfnup/01-Introduction.pdf","nup":"6"},
-        {"title":"Ottergram Setup","file":"/Users/loren/Sites/pdfnup/02-Ottergram-Setup.pdf","nup":"6"},
-        {"title":"Introduction","file":"/Users/loren/Sites/pdfnup/03-edit.pdf","nup":"full"},
-    ]
-    """.utf8)
+
     var fileDetails: [FileDetail]
     do {
+        let data = try Data(contentsOf: details, options: .mappedIfSafe)
         fileDetails = try JSONDecoder().decode([FileDetail].self, from: data)
     } catch {
         throw CommandError.couldNotDecodeFile(details)
     }
-    
-//    var nup = "2"
-//    if let nupFlagIndex = arguments.firstIndex(where: { $0 == "-n" || $0 == "--nup" }),
-//        let nupIndex = arguments.index(nupFlagIndex, offsetBy: 1, limitedBy: arguments.endIndex) {
-//        nup = arguments[nupIndex]
-//        arguments.removeSubrange(nupFlagIndex ... nupIndex)
-//    }
-//    guard let nupMode = NupMode(rawValue: nup) else {
-//        throw CommandError.missingArgument(key: "nup mode can only be full, 1, 2, or 6")
-//    }
 
-//    let inputs = arguments.map(URL.init(fileURLWithPath:))
     let action = CombinePDFs(cover: cover, fileDetails: fileDetails, output: output)
     try action.run()
 
