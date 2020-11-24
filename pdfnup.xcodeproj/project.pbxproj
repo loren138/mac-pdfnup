@@ -11,6 +11,8 @@
 		5C969EFF239D5567009DE624 /* CombinePDFs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969EFE239D5567009DE624 /* CombinePDFs.swift */; };
 		5C969F03239D5614009DE624 /* CommandError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969F02239D5614009DE624 /* CommandError.swift */; };
 		5C969F05239D5C20009DE624 /* NupMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969F04239D5C20009DE624 /* NupMode.swift */; };
+		5C9F325F256D3C130000FB85 /* TOCEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9F325E256D3C130000FB85 /* TOCEntry.swift */; };
+		5C9F3262256D3C2C0000FB85 /* CreateTOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +33,8 @@
 		5C969EFE239D5567009DE624 /* CombinePDFs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinePDFs.swift; sourceTree = "<group>"; };
 		5C969F02239D5614009DE624 /* CommandError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandError.swift; sourceTree = "<group>"; };
 		5C969F04239D5C20009DE624 /* NupMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NupMode.swift; sourceTree = "<group>"; };
+		5C9F325E256D3C130000FB85 /* TOCEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOCEntry.swift; sourceTree = "<group>"; };
+		5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTOC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +71,8 @@
 				5C969F02239D5614009DE624 /* CommandError.swift */,
 				5C969EFE239D5567009DE624 /* CombinePDFs.swift */,
 				5C969F04239D5C20009DE624 /* NupMode.swift */,
+				5C9F325E256D3C130000FB85 /* TOCEntry.swift */,
+				5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */,
 			);
 			path = pdfnup;
 			sourceTree = "<group>";
@@ -129,7 +135,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C9F3262256D3C2C0000FB85 /* CreateTOC.swift in Sources */,
 				5C969F05239D5C20009DE624 /* NupMode.swift in Sources */,
+				5C9F325F256D3C130000FB85 /* TOCEntry.swift in Sources */,
 				5C969EF8239D550F009DE624 /* main.swift in Sources */,
 				5C969EFF239D5567009DE624 /* CombinePDFs.swift in Sources */,
 				5C969F03239D5614009DE624 /* CommandError.swift in Sources */,

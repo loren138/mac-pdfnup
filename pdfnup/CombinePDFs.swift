@@ -1,12 +1,6 @@
 import Quartz
 import AVKit
 
-struct TOCEntry {
-    var title: String
-    var page: PDFPage
-    var startingPage: Int
-}
-
 struct CombinePDFs {
     var cover: URL?
     var inputs: [URL]
@@ -26,12 +20,13 @@ struct CombinePDFs {
 
             var titlePage: PDFPage?
             var index = 0
-            var startingPage = document.pageCount + 1
+            let startingPage = document.pageCount + 1
             while let nextSlide = inner.page(at: index) {
                 var newPage: PDFPage?
                 switch nup {
                 case .full:
-                    newPage = FullPage(page: nextSlide)
+//                    newPage = FullPage(page: nextSlide)
+                    newPage = nextSlide
                     index += 1
                 case .one:
                     newPage = OneUpPage(page: nextSlide)
@@ -75,7 +70,7 @@ struct CombinePDFs {
                 throw CommandError.couldNotOpenFile(coverUrl)
             }
             while let nextSlide = coverPdf.page(at: index) {
-                let newPage = FullPage(page: nextSlide)
+                let newPage = nextSlide
                 titlePage = titlePage ?? newPage
                 document.insert(newPage, at: frontPage)
                 index += 1
@@ -84,8 +79,23 @@ struct CombinePDFs {
             outline.addLink(named: "Cover", to: titlePage)
         }
         
+        if cover != nil {
+            var index = 0
+            var titlePage: PDFPage?
+            
+            let create = CreateTOC(tocEntries: tocEntries);
+            let toc = create.run();
+            while let nextSlide = toc.page(at: index) {
+                titlePage = titlePage ?? nextSlide
+                document.insert(nextSlide, at: frontPage)
+                index += 1
+                frontPage += 1
+            }
+            outline.addLink(named: "Table of Contents", to: titlePage)
+        }
+        
         for entry in tocEntries {
-            outline.addLink(named: entry.title + " " + String(entry.startingPage), to: entry.page)
+            outline.addLink(named: entry.title, to: entry.page)
         }
 
         if !document.write(to: output) {
@@ -109,6 +119,10 @@ private class NumberedPage: PDFPage {
     }
     
     final private func drawIn(rect: CGRect, attribString: NSAttributedString, context: CGContext) {
+        // https://stackoverflow.com/a/44215442/3854385
+        context.saveGState()
+        defer { context.restoreGState() }
+        
         let framesetter = CTFramesetterCreateWithAttributedString(attribString)
 
         // left column form
@@ -131,12 +145,12 @@ private class NumberedPage: PDFPage {
     }
 
     override func draw(with box: PDFDisplayBox, to context: CGContext) {
+        // Carry forward Links
+        for annotation in page.annotations {
+            self.addAnnotation(annotation)
+        }
         // Draw original content
         page.draw(with: box, to: context)
-
-        // Draw rotated overlay string
-        context.saveGState()
-        defer { context.restoreGState() }
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .right
@@ -251,11 +265,9 @@ private class SixUpPage: PDFPage {
 }
 
 private extension PDFDocument {
-
     func addPage(_ page: PDFPage) {
         insert(page, at: pageCount)
     }
-
 }
 
 private extension PDFPage {
