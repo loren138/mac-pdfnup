@@ -3,9 +3,8 @@ import AVKit
 
 struct CombinePDFs {
     var cover: URL?
-    var inputs: [URL]
+    var fileDetails: [FileDetail]
     var output: URL
-    var nup: NupMode
 
     func run() throws {
         let document = PDFDocument()
@@ -13,9 +12,10 @@ struct CombinePDFs {
         document.outlineRoot = outline
         var tocEntries = [TOCEntry]();
 
-        for input in inputs {
-            guard let inner = PDFDocument(url: input) else {
-                throw CommandError.couldNotOpenFile(input)
+        for fileDetail in fileDetails {
+            let url = URL.init(fileURLWithPath:fileDetail.file)
+            guard let inner = PDFDocument(url: url) else {
+                throw CommandError.couldNotOpenFile(url)
             }
 
             var titlePage: PDFPage?
@@ -23,9 +23,11 @@ struct CombinePDFs {
             let startingPage = document.pageCount + 1
             while let nextSlide = inner.page(at: index) {
                 var newPage: PDFPage?
-                switch nup {
+                guard let nupMode = NupMode(rawValue: fileDetail.nup) else {
+                    throw CommandError.missingArgument(key: "nup mode can only be full, 1, 2, or 6")
+                }
+                switch nupMode {
                 case .full:
-//                    newPage = FullPage(page: nextSlide)
                     newPage = nextSlide
                     index += 1
                 case .one:
@@ -52,11 +54,11 @@ struct CombinePDFs {
                 titlePage = titlePage ?? newPage
                 document.addPage(newPage!)
             }
-            if let title = titlePage {
+            if let page = titlePage {
                 tocEntries.append(TOCEntry(
-                                    title: input.deletingPathExtension().lastPathComponent,
-                                    page: title,
-                                    startingPage: startingPage
+                    title: fileDetail.title,
+                    page: page,
+                    startingPage: startingPage
                 ))
             }
         }
@@ -185,23 +187,6 @@ private class OneUpPage: PDFPage {
     override func draw(with box: PDFDisplayBox, to context: CGContext) {
         let rect = bounds(for: box).insetBy(dx: 36, dy: 27)
         page.draw(with: .cropBox, in: rect, to: context)
-    }
-
-}
-
-private class FullPage: PDFPage {
-
-    let page: PDFPage
-
-    init(page: PDFPage) {
-        self.page = page
-        super.init()
-        setBounds(CGRect(x: 0, y: 0, width: 612, height: 792), for: .mediaBox)
-    }
-
-    override func draw(with box: PDFDisplayBox, to context: CGContext) {
-        let rect = bounds(for: box)
-        page.draw(with: .cropBox, in: rect, to: context, drawOutline: false)
     }
 
 }

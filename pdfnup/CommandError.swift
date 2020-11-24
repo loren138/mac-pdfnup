@@ -5,6 +5,7 @@ enum CommandError: Swift.Error, CustomStringConvertible {
     case invalidArgument(key: String)
     case missingArgument(key: String)
     case couldNotOpenFile(URL, underlying: Error? = nil)
+    case couldNotDecodeFile(URL, underlying: Error? = nil)
     case couldNotSaveFile(URL, underlying: Error? = nil)
 
     var description: String {
@@ -15,6 +16,10 @@ enum CommandError: Swift.Error, CustomStringConvertible {
             return "Missing argument, needed \(key)"
         case .invalidArgument(let key):
             return "Invalid argument \(key)"
+        case .couldNotDecodeFile(_, let underlying?):
+            return String(describing: underlying)
+        case .couldNotDecodeFile(let url, nil):
+            return "Could not decode file at \(url.path)"
         case .couldNotOpenFile(_, let underlying?):
             return String(describing: underlying)
         case .couldNotOpenFile(let url, nil):

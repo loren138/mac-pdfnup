@@ -13,6 +13,7 @@
 		5C969F05239D5C20009DE624 /* NupMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C969F04239D5C20009DE624 /* NupMode.swift */; };
 		5C9F325F256D3C130000FB85 /* TOCEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9F325E256D3C130000FB85 /* TOCEntry.swift */; };
 		5C9F3262256D3C2C0000FB85 /* CreateTOC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */; };
+		5C9F3267256D5C580000FB85 /* FileDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9F3266256D5C580000FB85 /* FileDetail.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,7 @@
 		5C969F04239D5C20009DE624 /* NupMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NupMode.swift; sourceTree = "<group>"; };
 		5C9F325E256D3C130000FB85 /* TOCEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TOCEntry.swift; sourceTree = "<group>"; };
 		5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTOC.swift; sourceTree = "<group>"; };
+		5C9F3266256D5C580000FB85 /* FileDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileDetail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 				5C969F04239D5C20009DE624 /* NupMode.swift */,
 				5C9F325E256D3C130000FB85 /* TOCEntry.swift */,
 				5C9F3261256D3C2C0000FB85 /* CreateTOC.swift */,
+				5C9F3266256D5C580000FB85 /* FileDetail.swift */,
 			);
 			path = pdfnup;
 			sourceTree = "<group>";
@@ -104,7 +107,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1120;
-				LastUpgradeCheck = 1120;
+				LastUpgradeCheck = 1220;
 				ORGANIZATIONNAME = Loren;
 				TargetAttributes = {
 					5C969EF3239D550F009DE624 = {
@@ -141,6 +144,7 @@
 				5C969EF8239D550F009DE624 /* main.swift in Sources */,
 				5C969EFF239D5567009DE624 /* CombinePDFs.swift in Sources */,
 				5C969F03239D5614009DE624 /* CommandError.swift in Sources */,
+				5C9F3267256D5C580000FB85 /* FileDetail.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +177,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -233,6 +238,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
